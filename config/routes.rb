@@ -1,3 +1,10 @@
 Rails.application.routes.draw do
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  get 'bank/index'
+  resources :banks
+  resources :accounts
+  resources :customers
+  resources :loans
+  resources :lockers
+  resources :transactions
+  root 'bank#index'
 end
