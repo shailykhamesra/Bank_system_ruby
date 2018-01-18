@@ -1,0 +1,14 @@
+<%= form_with model: @account, local: true do |form| %>
+  <p>
+    <%= form.label :account_no %><br>
+    <%= form.text_field :account_no %>
+  </p>
+  <p>
+    <%= form.label :balance %><br>
+    <%= form.text_area :balance %>
+  </p>
+ <%= form.hidden_field :customer_id, :value => params[:customer_id] %>
+  <p>
+    <%= form.submit %>
+  </p>
+<% end %>

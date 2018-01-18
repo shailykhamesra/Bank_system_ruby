@@ -1,0 +1,24 @@
+<%= form_with model: @customer, local: true do |form| %>
+  <p>
+    <%= params%>
+    <%= form.label :name %><br>
+    <%= form.text_field :name %>
+  </p>
+ 
+  <p>
+    <%= form.label :address %><br>
+    <%= form.text_area :address %>
+  </p>
+
+  <p>
+    <%= form.label :phone %><br>
+    <%= form.text_area :phone %>  
+  </p>
+  <p>
+    <%= form.label :bank_id%><br>
+    <%= form.text_area :bank_id %>  
+  </p>
+  <p>
+    <%= form.submit %>
+  </p>
+<% end %>

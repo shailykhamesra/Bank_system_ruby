@@ -1,0 +1,16 @@
+<p>
+  <strong>Name:</strong>
+  <%= @customer.name %>
+</p>
+ <p>
+  <strong>Address:</strong>
+  <%= @customer.address %>
+</p>
+<p>
+  <strong>Phone:</strong>
+  <%= @customer.phone %>
+</p>
+ 
+<%= link_to 'Edit', edit_customer_path(@customer) %> |
+<%= link_to 'Back', customers_path %>
+<%= link_to 'Add Account', new_account_path(customer_id: @customer.id ) %>

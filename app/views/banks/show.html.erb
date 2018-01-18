@@ -1,0 +1,20 @@
+<p>
+  <strong>Name:</strong>
+  <%= @bank.name %>
+</p>
+ <p>
+  <strong>Address:</strong>
+  <%= @bank.address %>
+</p>
+<p>
+  <strong>Phone:</strong>
+  <%= @bank.phone %>
+</p>
+ <h2>banks</h2>
+
+ <h2>Add a customer:</h2>
+
+<%= link_to 'Edit', edit_bank_path(@bank) %> |
+<%= link_to 'Back', banks_path %>
+<%= link_to 'Add Customer', new_customer_path(bank_id: @bank.id ) %> 
+

@@ -1,0 +1,17 @@
+<h1>Listing lockers</h1>
+<%= link_to 'New locker', new_locker_path %>
+<table>
+  <tr>
+    <th>locker_key</th>
+    <th colspan="3"></th>
+  </tr>
+ 
+  <% @lockers.each do |locker| %>
+    <tr>
+      <td><%= locker.locker_key %></td>
+      <td><%= link_to 'Show', locker_path(locker) %></td>
+      <td><%= link_to 'Edit', edit_locker_path(locker) %></td>
+      <td><%= link_to 'Destroy', locker_path(locker),method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    </tr>
+  <% end %>
+</table>
