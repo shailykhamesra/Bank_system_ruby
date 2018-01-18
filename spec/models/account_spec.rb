@@ -1,4 +1,5 @@
 require 'rails_helper'
+
 RSpec.describe Account, type: :model do
   context 'success validation and association test' do
     it 'should be valid with a account_no' do 
