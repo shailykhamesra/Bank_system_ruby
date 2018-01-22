@@ -12,84 +12,77 @@ RSpec.describe BanksController, type: :controller do
       get :show, params: { id: bank.id }, format: 'json'
       response.should have_http_status(:ok)
     end
-  end
-  context 'POST create' do 
-    it 'should be a valid customer creation' do 
+    it 'should not show a valid customers' do
       bank = FactoryGirl.create(:bank)
-      post :create, params: {bank: { name: bank.name, address: bank.address, phone:bank.phone}}, format: 'json' 
+      get :show, params: { id: '' }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+  end
+  context 'POST create' do
+    it 'should be a valid customer creation' do
+      post :create, params: { bank: { name: Faker::Name.name, address: Faker::Address.city, phone: Faker::PhoneNumber.phone_number } }, format: 'json'
       response.should have_http_status(:ok)
     end
-  end 
+     it 'should not create a customer with invalid input' do
+      post :create, params: { bank: { name: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not create a customers with nil entries' do
+      bank = FactoryGirl.create(:bank)
+      post :create, params: { bank: { name: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not create a customers with nil entries' do
+      bank = FactoryGirl.create(:bank)
+      post :create, params: { bank: { address: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not create a customers with nil entries' do
+      bank = FactoryGirl.create(:bank)
+      post :create, params: { bank: { phone: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+  end
   context 'PUT update' do
     it 'should be valid customer updation' do
       bank = FactoryGirl.create(:bank)
-      put :update, params: {id: bank.id, bank: {name: bank.name, address: bank.address, phone:bank.phone}} , format:'json'
+      put :update, params: { id: bank.id, bank: { name: 'a', address: 'abc', phone: '1234567890' } }, format: 'json'
+      bank1=Bank.last
+      bank1.name.should eq 'a'
       response.should have_http_status(:ok)
+    end
+    it 'should not be a valid customer updation with invalid id' do
+      bank = FactoryGirl.create(:bank)
+      put :update, params: { id: bank.id, bank: {} }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not be a valid customer updation with invalid id' do
+      bank = FactoryGirl.create(:bank)
+      put :update, params: { id: bank.id, bank: { name: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not be a valid customer updation with invalid id' do
+      bank = FactoryGirl.create(:bank)
+      put :update, params: { id: bank.id, bank: { address: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not be a valid customer updation with invalid id' do
+      bank = FactoryGirl.create(:bank)
+      put :update, params: { id: bank.id, bank: { phone: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
     end
   end
   context 'DELETE destroy' do
     it 'should be valid customer deletion' do
-      bank= FactoryGirl.create(:bank)
+      bank = FactoryGirl.create(:bank)
       delete :destroy, params: { id: bank.id }, format: 'json'
       response.should have_http_status(:ok)
     end
-  end
-  context 'GET show' do
-    it 'should not show a valid customers' do
-      bank = FactoryGirl.create(:bank)
-      get :show, params:{id:""}, format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-  end
-  context 'POST create' do
-    it 'should not create a customer with invalid input' do
-      bank = FactoryGirl.create(:bank)
-      post :create, params: {bank: {name: bank.name}},format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-    it 'should not create a customers with nil entries' do
-      bank= FactoryGirl.create(:bank)
-      post :create, params:{bank: {name: nil}},format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-    it 'should not create a customers with nil entries' do
-      bank= FactoryGirl.create(:bank)
-      post :create, params:{bank: {address: nil}},format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-    it 'should not create a customers with nil entries' do
-      bank= FactoryGirl.create(:bank)
-      post :create, params:{bank: {phone: nil}},format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-  end
-  context 'PUT update' do
-    it 'should not be a valid customer updation with invalid id' do
-      bank = FactoryGirl.create(:bank)
-      put :update, params: {id:bank.id,bank: {}}, format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-    it 'should not be a valid customer updation with invalid id' do
-      bank = FactoryGirl.create(:bank)
-      put :update, params: {id:bank.id,bank: {name: nil}}, format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-    it 'should not be a valid customer updation with invalid id' do
-      bank = FactoryGirl.create(:bank)
-      put :update, params: {id:bank.id,bank: {address: nil}}, format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-    it 'should not be a valid customer updation with invalid id' do
-      bank = FactoryGirl.create(:bank)
-      put :update, params: {id:bank.id,bank: {phone: nil}}, format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-  end 
-  context 'DELETE destroy' do
     it 'should not be a valid customer deletion with invalid id' do
       bank = FactoryGirl.create(:bank)
-      delete :destroy, params:{id:""}, format: 'json'
-      response.should_not have_http_status(:ok)
+      delete :destroy, params: { id: '' }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
     end
   end
 end
+  

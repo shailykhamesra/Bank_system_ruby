@@ -3,6 +3,6 @@ class Account < ApplicationRecord
   has_many :loans
   has_many :lockers
   has_many :transactions
-  validates :account_no, presence: true, length: { minimum: 4}
+  validates :account_no, presence: true, length: { minimum: 4 }
   validates :balance, presence: true
 end

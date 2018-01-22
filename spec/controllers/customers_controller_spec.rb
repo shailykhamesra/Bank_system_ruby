@@ -14,19 +14,65 @@ RSpec.describe CustomersController, type: :controller do
       get :show, params: { id: customer.id }, format: 'json'
       response.should have_http_status(:ok)
     end
-  end
-  context 'POST create' do 
-    it 'should be a valid customer creation' do 
+    it 'should not show a valid customers' do
       customer = FactoryGirl.create(:customer)
-      post :create, params: {customer: { name: customer.name, address: customer.address, phone:customer.phone, bank_id: customer.bank_id}}, format: 'json' 
+      get :show, params: { id: '' }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+  end
+  context 'POST create' do
+    it 'should be a valid customer creation' do
+      bank = FactoryGirl.create(:bank)
+      post :create, params: { customer: { name: Faker::Name.name, address: Faker::Address.city, phone: Faker::PhoneNumber.phone_number, bank_id: bank.id } }, format: 'json'
       response.should have_http_status(:ok)
     end
-  end 
+    it 'should not create a customer with invalid input' do
+      post :create, params: { customer: { name: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not create a customers with nil entries' do
+      customer = FactoryGirl.create(:customer)
+      post :create, params: { customer: { name: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not create a customers with nil entries' do
+      customer = FactoryGirl.create(:customer)
+      post :create, params: { customer: { address: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not create a customers with nil entries' do
+      customer = FactoryGirl.create(:customer)
+      post :create, params: { customer: { phone: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+  end
   context 'PUT update' do
     it 'should be valid customer updation' do
       customer = FactoryGirl.create(:customer)
-      put :update, params: {id: customer.id, customer: {name: customer.name, address: customer.address, phone:customer.phone}}, format: 'json'
+      put :update, params: { id: customer.id, customer: { name: 'a', address: 'abcd', phone: '1234567890'} }, format: 'json'
+      customer1=Customer.last
+      customer1.name.should eq 'a'
       response.should have_http_status(:ok)
+    end
+    it 'should not be a valid customer updation with invalid id' do
+      customer = FactoryGirl.create(:customer)
+      put :update, params: { id: customer.id, customer: {} }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not be a valid customer updation with invalid id' do
+      customer = FactoryGirl.create(:customer)
+      put :update, params: { id: customer.id, customer: { name: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not be a valid customer updation with invalid id' do
+      customer = FactoryGirl.create(:customer)
+      put :update, params: { id: customer.id, customer: { address: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
+    end
+    it 'should not be a valid customer updation with invalid id' do
+      customer = FactoryGirl.create(:customer)
+      put :update, params: { id: customer.id, customer: { phone: nil } }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
     end
   end
   context 'DELETE destroy' do
@@ -35,63 +81,10 @@ RSpec.describe CustomersController, type: :controller do
       delete :destroy, params: { id: customer.id }, format: 'json'
       response.should have_http_status(:ok)
     end
-  end
-  context 'GET show' do
-	  it 'should not show a valid customers' do
-	    customer = FactoryGirl.create(:customer)
-	    get :show, params:{id:""}, format: 'json'
-	    response.should_not have_http_status(:ok)
-	  end
-  end
-  context 'POST create' do
-	  it 'should not create a customer with invalid input' do
-	    customer = FactoryGirl.create(:customer)
-	    post :create, params: {customer: {name: customer.name}},format: 'json'
-	    response.should_not have_http_status(:ok)
-	  end
-	  it 'should not create a customers with nil entries' do
-	    customer= FactoryGirl.create(:customer)
-	    post :create, params:{customer: {name: nil}},format: 'json'
-	    response.should_not have_http_status(:ok)
-	  end
-    it 'should not create a customers with nil entries' do
-      customer= FactoryGirl.create(:customer)
-      post :create, params:{customer: {address: nil}},format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-    it 'should not create a customers with nil entries' do
-      customer= FactoryGirl.create(:customer)
-      post :create, params:{customer: {phone: nil}},format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-  end
-  context 'PUT update' do
-	  it 'should not be a valid customer updation with invalid id' do
-	    customer = FactoryGirl.create(:customer)
-	    put :update, params: {id:customer.id ,customer: {}}, format: 'json'
-	    response.should_not have_http_status(:ok)
-	  end
-    it 'should not be a valid customer updation with invalid id' do
+    it 'should not be a valid customer deletion with invalid id' do
       customer = FactoryGirl.create(:customer)
-      put :update, params: {id:customer.id ,customer: {name: nil}}, format: 'json'
-      response.should_not have_http_status(:ok)
+      delete :destroy, params: { id: '' }, format: 'json'
+      response.should have_http_status(:unprocessable_entity)
     end
-    it 'should not be a valid customer updation with invalid id' do
-      customer = FactoryGirl.create(:customer)
-      put :update, params: {id:customer.id ,customer: {address: nil}}, format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-    it 'should not be a valid customer updation with invalid id' do
-      customer = FactoryGirl.create(:customer)
-      put :update, params: {id:customer.id ,customer: {phone: nil}}, format: 'json'
-      response.should_not have_http_status(:ok)
-    end
-  end 
-  context 'DELETE destroy' do
-	  it 'should not be a valid customer deletion with invalid id' do
-	    customer = FactoryGirl.create(:customer)
-	    delete :destroy, params:{id:""}, format: 'json'
-	    response.should_not have_http_status(:ok)
-	  end
   end
 end
